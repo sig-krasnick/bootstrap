@@ -1,0 +1,13 @@
+// app/views/probate/calculate_fee.js.erb
+const resultDiv = document.getElementById('probate_result');
+
+resultDiv.innerHTML = '<h2>Probate Fees Breakdown</h2>';
+resultDiv.innerHTML += `<p>Total Probate Fee: $<%= @result[:total_fee] %></p>`;
+resultDiv.innerHTML += '<h3>Breakdown</h3>';
+<% @result[:breakdown].each do |breakdown| %>
+  <% if breakdown[:description] %>
+    resultDiv.innerHTML += `<p><%= breakdown[:description] %></p>`;
+  <% else %>
+    resultDiv.innerHTML += `<p><%= breakdown[:range] %>: <%= breakdown[:amount] %></p>`;
+  <% end %>
+<% end %>;

@@ -1,0 +1,29 @@
+<!-- app/views/probate/index.html.erb -->
+<div class="container">
+    <h1>Calculate Probate Fees</h1>
+
+    <div class="md-6">
+        <%= form_with(url: '/probate/calculate_fee', method: 'get', remote: true, id: 'probate_form') do |form| %>
+        <div class="form-group">
+            <%= form.label :estate_value, 'Estate Value' %>
+            <%= form.number_field :estate_value, value: @estate_value, class: 'form-control', step: 'any', required: true %>
+        </div>
+        <%= form.submit 'Calculate Approximate Fees', class: 'btn btn-primary' %>
+        <% end %>
+
+        <% if @result.present? %>
+        <div id="probate_result" style="margin-top: 20px;">
+            <h2>Statutory Probate Attorney Fees and Executor Compensation Calculator</h2>
+            <p>Total Probate Fee: $<%= @result[:total_fee] %></p>
+            <h3>Fee Breakdown</h3>
+            <% @result[:breakdown].each do |breakdown| %>
+            <% if breakdown[:description] %>
+                <p><%= breakdown[:description] %></p>
+            <% else %>
+                <p><%= breakdown[:range] %>: <%= breakdown[:amount] %></p>
+            <% end %>
+            <% end %>
+        </div>
+        <% end %>
+    </div>
+</div>

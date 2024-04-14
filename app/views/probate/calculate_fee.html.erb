@@ -1,0 +1,47 @@
+<!-- app/views/probate/calculate_fee.html.erb -->
+<h1>Calculate Probate Fees</h1>
+
+<%= form_with(url: '/probate/calculate_fee', method: 'get', id: 'probate_form') do |form| %>
+  <div class="form-group">
+    <%= form.label :estate_value, 'Estate Value' %>
+    <%= form.number_field :estate_value, class: 'form-control', step: 'any', required: true %>
+  </div>
+  <%= form.submit 'Calculate Approximate Fees', class: 'btn btn-primary' %>
+<% end %>
+
+<div id="probate_result" style="margin-top: 20px;"></div>
+
+<script>
+  // JavaScript to handle form submission and display result
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('probate_form');
+    const resultDiv = document.getElementById('probate_result');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const queryParams = new URLSearchParams(formData).toString();
+      fetch(form.getAttribute('action') + '?' + queryParams)
+      .then(response => response.json())
+      .then(data => {
+        // Display the result
+        resultDiv.innerHTML = '<h2>Probate Fees Breakdown</h2>';
+        resultDiv.innerHTML += `<p>Total Probate Fee: $${data.probate_fee.total_fee}</p>`;
+        resultDiv.innerHTML += '<h3>Breakdown</h3>';
+        data.probate_fee.breakdown.forEach(breakdown => {
+          if (breakdown.description) {
+            resultDiv.innerHTML += `<p>${breakdown.description}</p>`;
+          } else {
+            resultDiv.innerHTML += `<p>${breakdown.range}: ${breakdown.amount}</p>`;
+          }
+        });
+      })
+      .catch(error => {
+        // Handle errors
+        resultDiv.innerHTML = '<p>An error occurred. Please try again later.</p>';
+        console.error('Error:', error);
+      });
+    });
+  });
+</script>
